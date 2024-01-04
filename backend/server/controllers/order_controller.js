@@ -5,17 +5,19 @@ const Order = require('../models/order_model');
 const util = require('../../util/util');
 
 const getWinUsers = async (req, res) => {
-    if (!req.query || !req.query.id) {
-        res.status(400).send({error: 'Id is required'});
-        return;
-    }
+    // if (!req.query || !req.query.id) {
+    //     res.status(400).send({error: 'Id is required'});
+    //     return;
+    // }
 
-    const productId = req.query.id;
-    const data = await Order.getWinUsers(productId);
+    // const productId = req.query.id;
+    const data = await Order.getWinUsers();
 
     data.forEach(d => {
-        d.productImage = util.getImagePath(req.protocol, req.hostname, productId) + d.productImage;
+        d.productImage = util.getImagePath(req.protocol, req.hostname, d.product_id) + d.productImage;
         d.userPicture = util.getUserImagePath(req.protocol, req.hostname, d.user_id) + d.userPicture;
+        d.product_id = undefined;
+        d.user_id = undefined;
     });
     
     if (data.error) {

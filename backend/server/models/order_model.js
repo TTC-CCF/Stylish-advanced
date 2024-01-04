@@ -1,28 +1,20 @@
 const { pool } = require('./mysqlcon');
 const got = require('got');
 
-const getWinUsers = async (productId) => {
+const getWinUsers = async () => {
     try {
-        const [orderData] = await pool.query(`SELECT COUNT(*) qty, user_id FROM orderlist WHERE product_id = ? GROUP BY user_id`, [productId]);
-        const [productImage] = await pool.query(`SELECT main_image productImage FROM product WHERE id = ?`, [productId]);
-        if (orderData && orderData.length > 0) {
-            const userIds = orderData.map(order => order.user_id);
-            let [users] = await pool.query(`SELECT id, picture userPicture, name userName FROM user WHERE id IN (?)`, [userIds]);
-            console.log(users);
-            users = users.sort((a, b) => {
-                return userIds.indexOf(a.id) - userIds.indexOf(b.id);
-            });
+        const [orderData] = await pool.query(`SELECT COUNT(*) qty, user_id, product_id FROM orderlist GROUP BY user_id, product_id`);
 
-            for (let i = 0; i < orderData.length; i++) {
-                orderData[i].productImage = productImage[0].productImage;
-                orderData[i].userPicture = users[i].userPicture;
-                orderData[i].userName = users[i].userName;
-            }
-
-            return orderData;
-        } else {
-            return [];
+        for (let i = 0; i < orderData.length; i++) {
+            const [product] = await pool.query(`SELECT title productName, main_image productImage FROM product WHERE id = ?`, [orderData[i].product_id]);
+            const [user] = await pool.query(`SELECT name userName, picture userPicture FROM user WHERE id = ?`, [orderData[i].user_id]);
+            orderData[i].productName = product[0].productName;
+            orderData[i].productImage = product[0].productImage;
+            orderData[i].userName = user[0].userName;
+            orderData[i].userPicture = user[0].userPicture;
         }
+        
+        return orderData;
     } catch (error) {
         console.log(error);
         return { error };
