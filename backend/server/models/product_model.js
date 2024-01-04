@@ -310,6 +310,12 @@ const getAllSeckillProduct = async () => {
         const [result] = await conn.query(
             `SELECT name, price, number, picture, product_id productId FROM seckillproduct`
         )
+        result.forEach((item) => {
+            item.size = 'F';
+            item.colorCode = 'FFFFFF';
+            item.colorName = '白色';
+        })
+
         return result;
     } catch (error) {
         console.error('Error getting all seckill: ', error);

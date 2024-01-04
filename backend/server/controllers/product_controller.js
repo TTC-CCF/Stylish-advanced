@@ -503,6 +503,7 @@ const getAllSeckillProduct = async (req, res) => {
     for (let i = 0; i < result.length; i++) {
         const remain = await getRemain(result[i].productId);
         result[i].remain = remain;
+        result[i].stock = remain;
     }
 
     if (result === -1) {
