@@ -2,6 +2,8 @@ const { pool } = require('../../server/models/mysqlcon');
 const Redis = require('ioredis');
 const fs = require('fs');
 const { TEST_ENDPOINT } = process.env;
+let NUMBER = 1000;
+
 
 const redis = new Redis({
     host: '127.0.0.1',
@@ -13,15 +15,13 @@ redis.on("error", function (error) {
     console.error(error);
 });
 
-//五條悟圖踢
-
-const seckillProducts = [
+const seckillProducts1 = [
     {
         productId: "202401202401",
         category: "men",
         title: `五條悟圖踢`,
         description: `五條悟是木葉隱村的領袖之一，同時也是五影之一。\n他擁有卓越的忍者技能，尤其擅長木遁和太極拳等忍術。\n他的身體能夠分解成分子，使他能夠穿越物體、迅速閃避攻擊，以及進行多種變化。`,
-        price: 34000,
+        price: 500,
         texture: `無限`,
         wash: `摸不到`,
         place: `台灣製造`,
@@ -37,7 +37,7 @@ const seckillProducts = [
         category: "men",
         title: `Notorious 上衣`,
         description: `館長，本名陳之漢，是台灣的網路名人，以其在社群媒體上獨特的風格和搞笑的內容而廣受歡迎。\n他的YouTube頻道以直播、搞笑、挑戰和各種娛樂內容為主，深受觀眾歡迎。`,
-        price: 20000,
+        price: 1000,
         texture: `很硬`,
         wash: `可水洗`,
         place: `台灣製造`,
@@ -47,6 +47,41 @@ const seckillProducts = [
         sizes: "F",
         main_image: "notorious1.jpg",
         other_images: ["notorious2.jpg", "notorious3.jpg"]
+    }
+]
+
+const seckillProducts2 = [
+    {
+        productId: "202401202401",
+        category: "accessories",
+        title: `乖乖椰子口味`,
+        description: `乖乖椰子口味，是乖乖的經典口味之一，椰子的香氣與乖乖的酥脆口感，讓人一吃就愛上。`,
+        price: 20,
+        texture: `酥脆`,
+        wash: `水洗你就吃不到了`,
+        place: `台灣製造`,
+        note: `商品可以拿來給我吃`,
+        story: `乖乖椰子口味，是乖乖的經典口味之一，椰子的香氣與乖乖的酥脆口感，讓人一吃就愛上。`,
+        color_ids: "1",
+        sizes: "XS",
+        main_image: "save1.jpg",
+        other_images: ["save3.jpeg", "save2.jpg"]
+    },
+    {
+        productId: "202402202402",
+        category: "accessories",
+        title: `乳加巧克力`,
+        description: `乳加巧克力是一種美味的甜點，它結合了豐富的牛奶和濃郁的巧克力，\n呈現出令人垂涎欲滴的口感和味道。這種巧克力通常採用高品質的巧克力原料，\n融合了牛奶的滑潤和甜美，創造出一種奶油且充滿層次感的味道。`,
+        price: 10,
+        texture: `很硬`,
+        wash: `可能可以水洗`,
+        place: `台灣製造`,
+        note: `商品不可退換貨`,
+        story: `外觀上，乳加巧克力可能呈現出光滑的表面，有時還帶有細緻的花紋或圖案，增添了一份視覺的享受。口感上，它通常具有柔軟的質地，巧克力的豐滿香氣在口中散發，而牛奶的甜味則讓整體味道更加平衡。`,
+        color_ids: "1,2",
+        sizes: "F",
+        main_image: "choco1.jpg",
+        other_images: ["choco2.jpg", "choco3.png"]
     }
 ]
 
@@ -61,10 +96,10 @@ const resetSecKill = async () => {
     await pool.query("DELETE FROM product WHERE id = 202401202401 OR id = 202402202402");
 }
 
-const createSecKillProduct = async () => {
+const createSecKillProduct = async (secproduct) => {
     const formdatas = [];
-    for (let i = 0; i < seckillProducts.length; i++) {
-        const product = seckillProducts[i];
+    for (let i = 0; i < secproduct.length; i++) {
+        const product = secproduct[i];
         const formdata = new FormData();
         formdata.append('product_id', product.productId);
         formdata.append('category', product.category);
@@ -99,8 +134,8 @@ const createSecKillProduct = async () => {
         console.log(data);
     }
 
-    for (let i = 0; i < seckillProducts.length; i++) {
-        const product = seckillProducts[i];
+    for (let i = 0; i < secproduct.length; i++) {
+        const product = secproduct[i];
         const result = await fetch(`${TEST_ENDPOINT}/api/1.0/products/setKillProduct`, {
             method: 'POST',
             headers: {
@@ -109,7 +144,7 @@ const createSecKillProduct = async () => {
             body: JSON.stringify({
                 productId: product.productId,
                 name: product.title,
-                number: 1000,
+                number: NUMBER,
             })
         });
         const data = await result.json();
@@ -118,10 +153,21 @@ const createSecKillProduct = async () => {
 
 }
 
-
 (async () => {
-    await resetSecKill();
-    console.log("Reset successfully!");
-    await createSecKillProduct();
+    const args = process.argv.slice(2);
+
+    if (args.length < 2) {
+        console.log("Usage: node reset.js [1|2] <NUMBER>");
+        process.exit();
+    } else {
+        NUMBER = args[1];
+        await resetSecKill();
+        console.log("Reset successfully!");
+        if (args[0] === '1') {
+            await createSecKillProduct(seckillProducts1);
+        } else if (args[0] === '2'){
+            await createSecKillProduct(seckillProducts2);
+        }
+    }
     process.exit();
 })();

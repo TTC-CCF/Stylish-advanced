@@ -434,7 +434,7 @@ const panicBuying = async (req, res) => {
     if (kill == 1) {
         res.status(200).send({ "message": "搶購成功" });
     } else {
-        res.status(200).send({ 'message': "東西沒了 下次請早" })
+        res.status(404).send({ 'message': "東西沒了 下次請早" })
     }
 }
 
