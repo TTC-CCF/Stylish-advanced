@@ -13,38 +13,40 @@ redis.on("error", function (error) {
     console.error(error);
 });
 
+//五條悟圖踢
+
 const seckillProducts = [
     {
         productId: "202401202401",
-        category: "accessories",
-        title: `APPLE iPhone 15 Pro 256G`,
-        description: `iPhone 15 是蘋果公司最新推出的旗艦智能手機，將再次重新定義行業標準。\n其驚人的設計融合了超薄、輕巧的機身，採用先進的材料打造，呈現出未來感的外觀。\n前後玻璃面板巧妙地融合，營造出無縫的視覺效果，機身邊緣更是精雕細琢，提供極致握持感。\n`,
+        category: "men",
+        title: `五條悟圖踢`,
+        description: `五條悟是木葉隱村的領袖之一，同時也是五影之一。\n他擁有卓越的忍者技能，尤其擅長木遁和太極拳等忍術。\n他的身體能夠分解成分子，使他能夠穿越物體、迅速閃避攻擊，以及進行多種變化。`,
         price: 34000,
-        texture: `金屬質地`,
-        wash: `不可水洗`,
+        texture: `無限`,
+        wash: `摸不到`,
         place: `台灣製造`,
         note: `商品不可退換貨`,
-        story: `iPhone 15 是蘋果公司最新推出的旗艦智能手機，將再次重新定義行業標準。其驚人的設計融合了超薄、輕巧的機身，採用先進的材料打造，呈現出未來感的外觀。前後玻璃面板巧妙地融合，營造出無縫的視覺效果，機身邊緣更是精雕細琢，提供極致握持感。\n`,
+        story: `五條悟是木葉隱村的領袖之一，同時也是五影之一。他擁有卓越的忍者技能，尤其擅長木遁和太極拳等忍術。他的身體能夠分解成分子，使他能夠穿越物體、迅速閃避攻擊，以及進行多種變化。`,
         color_ids: "1",
-        sizes: "256G, 512G",
-        main_image: "iphone-153.jpg",
-        other_images: ["iphone-151.jpg", "iphone-152.jpg", "iphone-15.jpg"]
+        sizes: "S,M,L,XL",
+        main_image: "gojo1.jpg",
+        other_images: ["gojo4.jpg", "gojo2.jpg", "gojo3.jpg"]
     },
     {
         productId: "202402202402",
-        category: "accessories",
-        title: `APPLE AirPods Max`,
-        description: `AirPods Max是一款高端的無線耳罩式耳機，專為追求卓越音質和豪華感的用戶而設計。\n這款頂級耳機集結了蘋果的創新技術和卓越工藝，提供了一種令人沉浸的音頻體驗，\n同時兼具時尚設計和出色的舒適度。`,
+        category: "men",
+        title: `Notorious 上衣`,
+        description: `館長，本名陳之漢，是台灣的網路名人，以其在社群媒體上獨特的風格和搞笑的內容而廣受歡迎。\n他的YouTube頻道以直播、搞笑、挑戰和各種娛樂內容為主，深受觀眾歡迎。`,
         price: 20000,
-        texture: `金屬質地`,
-        wash: `不可水洗`,
+        texture: `很硬`,
+        wash: `可水洗`,
         place: `台灣製造`,
         note: `商品不可退換貨`,
-        story: `AirPods Max是一款高端的無線耳罩式耳機，專為追求卓越音質和豪華感的用戶而設計。這款頂級耳機集結了蘋果的創新技術和卓越工藝，提供了一種令人沉浸的音頻體驗，同時兼具時尚設計和出色的舒適度。`,
+        story: `儘管館長的風格曾引起爭議，但他在網路娛樂領域的成功不可否認，並在台灣社會中建立了一個獨特的存在。 然後豬大哥沒有死!`,
         color_ids: "1,2",
         sizes: "F",
-        main_image: "airpods-max2.jpg",
-        other_images: ["airpods-max1.jpg", "airpods-max3.jpg"]
+        main_image: "notorious1.jpg",
+        other_images: ["notorious2.jpg", "notorious3.jpg"]
     }
 ]
 
@@ -52,6 +54,11 @@ const resetSecKill = async () => {
     await redis.flushall();
     await pool.query("DELETE FROM seckillproduct");
     await pool.query("DELETE FROM orderlist");
+
+    // delete product
+    await pool.query("DELETE FROM variant WHERE product_id = 202401202401 OR product_id = 202402202402");
+    await pool.query("DELETE FROM product_images WHERE product_id = 202401202401 OR product_id = 202402202402");
+    await pool.query("DELETE FROM product WHERE id = 202401202401 OR id = 202402202402");
 }
 
 const createSecKillProduct = async () => {

@@ -87,3 +87,6 @@ midterm*
 
 # recommendation model
 util/recommendation/matrixes
+
+# insert data scripts
+test/account
