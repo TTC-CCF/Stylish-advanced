@@ -2,7 +2,8 @@ const { pool } = require('../../server/models/mysqlcon');
 const Redis = require('ioredis');
 const fs = require('fs');
 const { TEST_ENDPOINT } = process.env;
-let NUMBER = 1000;
+let NUMBER1 = 1000;
+let NUMBER2 = 1000;
 
 
 const redis = new Redis({
@@ -80,8 +81,8 @@ const seckillProducts2 = [
         story: `外觀上，乳加巧克力可能呈現出光滑的表面，有時還帶有細緻的花紋或圖案，增添了一份視覺的享受。口感上，它通常具有柔軟的質地，巧克力的豐滿香氣在口中散發，而牛奶的甜味則讓整體味道更加平衡。`,
         color_ids: "1,2",
         sizes: "F",
-        main_image: "choco1.jpg",
-        other_images: ["choco2.jpg", "choco3.png"]
+        main_image: "choco3.png",
+        other_images: ["choco2.jpg", "choco1.jpg"]
     }
 ]
 
@@ -144,7 +145,7 @@ const createSecKillProduct = async (secproduct) => {
             body: JSON.stringify({
                 productId: product.productId,
                 name: product.title,
-                number: NUMBER,
+                number: i == 0 ? NUMBER1 : NUMBER2,
             })
         });
         const data = await result.json();
@@ -156,11 +157,12 @@ const createSecKillProduct = async (secproduct) => {
 (async () => {
     const args = process.argv.slice(2);
 
-    if (args.length < 2) {
-        console.log("Usage: node reset.js [1|2] <NUMBER>");
+    if (args.length < 3) {
+        console.log("Usage: node reset.js [1|2] <NUMBER1> <NUMBER2>");
         process.exit();
     } else {
-        NUMBER = args[1];
+        NUMBER1 = args[1];
+        NUMBER2 = args[2];
         await resetSecKill();
         console.log("Reset successfully!");
         if (args[0] === '1') {
