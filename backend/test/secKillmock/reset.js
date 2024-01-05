@@ -22,7 +22,7 @@ const seckillProducts1 = [
         category: "men",
         title: `五條悟圖踢`,
         description: `五條悟是木葉隱村的領袖之一，同時也是五影之一。\n他擁有卓越的忍者技能，尤其擅長木遁和太極拳等忍術。\n他的身體能夠分解成分子，使他能夠穿越物體、迅速閃避攻擊，以及進行多種變化。`,
-        price: 500,
+        price: 100,
         texture: `無限`,
         wash: `摸不到`,
         place: `台灣製造`,
@@ -38,7 +38,7 @@ const seckillProducts1 = [
         category: "men",
         title: `Notorious 上衣`,
         description: `館長，本名陳之漢，是台灣的網路名人，以其在社群媒體上獨特的風格和搞笑的內容而廣受歡迎。\n他的YouTube頻道以直播、搞笑、挑戰和各種娛樂內容為主，深受觀眾歡迎。`,
-        price: 1000,
+        price: 500,
         texture: `很硬`,
         wash: `可水洗`,
         place: `台灣製造`,
@@ -94,6 +94,7 @@ const resetSecKill = async () => {
     // delete product
     await pool.query("DELETE FROM variant WHERE product_id = 202401202401 OR product_id = 202402202402");
     await pool.query("DELETE FROM product_images WHERE product_id = 202401202401 OR product_id = 202402202402");
+    await pool.query("DELETE FROM comment WHERE productId = 202401202401 OR productId = 202402202402");
     await pool.query("DELETE FROM product WHERE id = 202401202401 OR id = 202402202402");
 }
 
